@@ -8,6 +8,7 @@ interface CustomButtonProps{
     className?: string;
     children?: React.ReactNode;
     onClick?: ()=> void;
+    disabled?: boolean;
 }
 
 export default function CustomButton({
@@ -16,17 +17,20 @@ export default function CustomButton({
     className,
     children,
     onClick,
+    disabled,
 }: CustomButtonProps){
 
     return(
         <>
-            <div 
+            <button 
                 className={`${styles.button} ${className ?? ""}`}
                 style={{width: width ? `${width}px`: "auto", height: height ? `${height}px` : "auto"}}
                 onClick={onClick}
+                disabled={disabled}
+
                 >
                     {children}
-            </div>
+            </button>
         </>
     );
 }
