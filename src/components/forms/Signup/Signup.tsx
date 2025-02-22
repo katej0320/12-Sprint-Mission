@@ -6,27 +6,34 @@ import styles from "@/pages/login/index.module.scss";
 import { useAuth } from "@/hooks/useAuth";
 
 
-
-
-
 type Inputs = {
   email: string;
+  nickname: string;
   password: string;
+  passwordCheck: string;
+  term?: boolean;
 };
 
-export default function Form() {
-  
+export default function SignupForm() {
   const { handleLogin, loading, error } = useAuth();
   const {
     register,
     handleSubmit,
     watch,
     formState: { isSubmitting, errors },
+    getValues,
   } = useForm<Inputs>({
     mode: "onBlur",
-  });
+    defaultValues: {
+      email: '',
+      nickname: '',
+      password: '',
+      passwordCheck:'',
+      term: false,
 
-  
+
+    }
+  });
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     await handleLogin(data.email, data.password);
@@ -54,6 +61,18 @@ export default function Form() {
           // className={`${errors.email ? styles.errorInput : ""}`}
         />
          {errors.email && <span className={styles.errorMessage}>{errors.email?.message}</span>}
+         <InputField
+          id="nickName"
+          label="닉네임"
+          type="text"
+          placeholder="닉네임임 입력해주세요"
+          register={register("nickname", {
+            required: true,
+          })}
+          errors={errors.nickname}
+          // className={`${errors.email ? styles.errorInput : ""}`}
+        />
+         
 
         <InputField
           id="password"
@@ -69,11 +88,27 @@ export default function Form() {
           })}
           errors={errors.password}
         />
-        
          {errors.password && <span className={styles.errorMessage}>{errors.password?.message}</span>}
 
-        <FormButton disabled={isSubmitting} className={styles.loginButton} type="submit">
-          로그인
+         <InputField
+          id="passwordConfirm"
+          label="비밀번호 확인"
+          type="password"
+          placeholder="비밀번호를 다시 한번 입력해주세요"
+          register={register("passwordCheck", {
+            required: true,
+              validate: {
+                matchPassword: (value) => {
+                  const { password } = getValues();
+                  return password === value || '비밀번호가 일치하지 않습니다'
+                }
+              }
+          })}
+          errors={errors.passwordCheck}
+        />
+         {errors.passwordCheck && <span className={styles.errorMessage}>{errors.passwordCheck?.message}</span>}
+        <FormButton disabled={isSubmitting} className={styles.formButton} type="submit">
+          회원가입
         </FormButton>
       </form>
     </div>
