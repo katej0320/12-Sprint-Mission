@@ -15,7 +15,7 @@ type Inputs = {
 };
 
 export default function SignupForm() {
-  const { handleLogin, loading, error } = useAuth();
+  const { handleSignUp, loading, error } = useAuth();
   const {
     register,
     handleSubmit,
@@ -36,7 +36,7 @@ export default function SignupForm() {
   });
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    await handleLogin(data.email, data.password);
+    await handleSignUp(data.email, data.nickname,data.password, data.passwordCheck);
   }
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -58,14 +58,14 @@ export default function SignupForm() {
             },
           })}
           errors={errors.email}
-          // className={`${errors.email ? styles.errorInput : ""}`}
+          className={`${errors.email ? styles.errorInput : ""}`}
         />
          {errors.email && <span className={styles.errorMessage}>{errors.email?.message}</span>}
          <InputField
           id="nickName"
           label="닉네임"
           type="text"
-          placeholder="닉네임임 입력해주세요"
+          placeholder="닉네임 입력해주세요"
           register={register("nickname", {
             required: true,
           })}
