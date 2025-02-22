@@ -2,8 +2,7 @@ import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import InputField from "@/components/ui/forms/InputField/InputField";
 import FormButton from "@/components/ui/forms/FormButton/FormButton";
-
-
+import styles from "@/pages/login/index.module.scss";
 type Inputs = {
   email: string;
   password: string;
@@ -15,9 +14,11 @@ export default function Form() {
     handleSubmit,
     watch,
     formState: { isSubmitting, errors },
-  } = useForm<Inputs>();
+  } = useForm<Inputs>({
+    mode: "onBlur",
+  });
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<Inputs> = (data) => {console.log(data);}
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   console.log(watch("email")); // watch input value by passing the name of it
@@ -31,14 +32,16 @@ export default function Form() {
           type="text"
           placeholder="이메일을 입력해주세요"
           register={register("email", {
-            required: "이메일을 입력해주세요",
+            required: true,
             pattern: {
               value: emailPattern,
               message: "이메일 형식으로 입력해주세요",
             },
           })}
-          error={errors.email?.message}
+          errors={errors.email}
+          // className={`${errors.email ? styles.errorInput : ""}`}
         />
+         {errors.email && <span className={styles.errorMessage}>{errors.email?.message}</span>}
 
         <InputField
           id="password"
@@ -46,26 +49,21 @@ export default function Form() {
           type="password"
           placeholder="비밀번호를 입력해주세요"
           register={register("password", {
-            required: "비밀번호를 입력해주세요",
+            required: true,
             minLength: {
               value: 8,
               message: "비밀번호를 8자 이상 입력해주세요",
             },
           })}
-          error={errors.password?.message}
+          errors={errors.password}
         />
-        <FormButton
-          disabled={isSubmitting}> 
+         {errors.password && <span className={styles.errorMessage}>{errors.password?.message}</span>}
+        <FormButton disabled={isSubmitting} className={styles.loginButton} type="submit">
           로그인
-          </FormButton>
-        
-        {/* <input
-        className={styles.submit}
-        type="submit" disabled={isSubmitting} /> */}
-
-
-
+        </FormButton>
       </form>
     </div>
   );
 }
+
+
